@@ -16,23 +16,21 @@ import covid.cases.tracker.services.TrackerService;
 
 @Controller
 
-public class HomeController 
-{
+public class HomeController {
 	@Autowired
 	private TrackerService coronaVirusDataService;
-	
+
 	@GetMapping("/")
-	public String home(Model model)
-	{
-		    List<LocationDetails> allStats = coronaVirusDataService.getDetails();
-	        int totalReportedCases = allStats.stream().mapToInt(stat -> stat.getTotalCase()).sum();
-	        int totalNewCases = allStats.stream().mapToInt(stat -> stat.getDiffFromPrevDay()).sum();
-	        model.addAttribute("locationStats", allStats);
-	        model.addAttribute("totalReportedCases", totalReportedCases);
-	        model.addAttribute("totalNewCases", totalNewCases);
-		
+	public String home(Model model) {
+		List<LocationDetails> allStats = coronaVirusDataService.getDetails();
+		int totalReportedCases = allStats.stream().mapToInt(stat -> stat.getTotalCase()).sum();
+		int totalNewCases = allStats.stream().mapToInt(stat -> stat.getDiffFromPrevDay()).sum();
+		model.addAttribute("locationStats", allStats);
+		model.addAttribute("totalReportedCases", totalReportedCases);
+		model.addAttribute("totalNewCases", totalNewCases);
+
 		return "home";
-		
+
 	}
 
 }

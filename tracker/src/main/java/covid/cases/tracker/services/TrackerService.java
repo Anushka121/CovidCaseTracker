@@ -26,18 +26,18 @@ import covid.cases.tracker.model.LocationDetails;
 
 @Service
 public class TrackerService {
-    //global cases
+	// global cases
 	private static String casesUrl = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
-    //demise global
+	// demise global
 //	private static String demiseUrl="https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
 //    //recovred 
 //	private static String recovered="https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv";
 //    //indian vaccinated
 //	private static String indian="https://github.com/owid/covid-19-data/blob/master/public/data/vaccinations/country_data/India.csv";
 //	
-	
-	private ArrayList<LocationDetails> details=  new ArrayList<>();
-	
+
+	private ArrayList<LocationDetails> details = new ArrayList<>();
+
 	public ArrayList<LocationDetails> getDetails() {
 		return details;
 	}
@@ -49,27 +49,27 @@ public class TrackerService {
 	@PostConstruct
 	@Scheduled(cron = "* * 1 * * *")
 	public void fetchVirusData() throws IOException {
-		
-		ArrayList<LocationDetails> detail=  new ArrayList<>();
-		
+
+		ArrayList<LocationDetails> detail = new ArrayList<>();
+
 		URL url = new URL(casesUrl);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		Iterable<CSVRecord> records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
-		
+
 		for (CSVRecord record : records) {
 			LocationDetails location = new LocationDetails();
-            location.setState(record.get("Province/State"));
-            location.setCountry(record.get("Country/Region"));
-            int latestCases = Integer.parseInt(record.get(record.size() - 1));
-            int prevDayCases = Integer.parseInt(record.get(record.size() - 2));
-            location.setTotalCase(latestCases);
-            location.setDiffFromPrevDay(latestCases - prevDayCases);
-            detail.add(location);
-            //System.out.print(detail);
-        }
-		this.details=detail;
+			location.setState(record.get("Province/State"));
+			location.setCountry(record.get("Country/Region"));
+			int latestCases = Integer.parseInt(record.get(record.size() - 1));
+			int prevDayCases = Integer.parseInt(record.get(record.size() - 2));
+			location.setTotalCase(latestCases);
+			location.setDiffFromPrevDay(latestCases - prevDayCases);
+			detail.add(location);
+			// System.out.print(detail);
+		}
+		this.details = detail;
 		in.close();
 	}
 }
